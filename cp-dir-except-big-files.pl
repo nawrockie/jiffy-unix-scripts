@@ -5,7 +5,7 @@
 # a certain size
 use warnings;
 use strict;
-#use Getopt::Long;
+use Getopt::Long;
 
 my $usage;
 $usage  = "perl cp-dir-except-big-files.pl <source dir> <dest dir (can be '.')> <maximum file size in Gb>\n";
@@ -53,7 +53,7 @@ actually_cp_dir_except_big_files($src_dir, $dst_dir, $gb_limit, $do_dry, $do_ver
 #################################################################
 sub actually_cp_dir_except_big_files { 
   my $sub_name = "actually_cp_dir_except_big_files";
-  my $nargs_expected = 3;
+  my $nargs_expected = 5;
   if(scalar(@_) != $nargs_expected) { printf STDERR ("ERROR, $sub_name entered with %d != %d input arguments.\n", scalar(@_), $nargs_expected); exit(1); } 
 
   my ($src_dir, $dst_dir, $gb_limit, $do_dry, $do_verbose) = @_;
@@ -74,7 +74,7 @@ sub actually_cp_dir_except_big_files {
       my $new_dst_dir = $dst_file;
       run_command("mkdir $new_dst_dir", $do_dry, $do_verbose);
       # recursive call for subdir
-      actually_cp_dir_except_big_files($new_src_dir, $new_dst_dir, $gb_limit);
+      actually_cp_dir_except_big_files($new_src_dir, $new_dst_dir, $gb_limit, $do_dry, $do_verbose);
     }
     elsif($gb_size < $gb_limit) { 
       run_command("cp $src_file $dst_file", $do_dry, $do_verbose);
